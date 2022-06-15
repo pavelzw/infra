@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  kuma:
+    image: "louislam/uptime-kuma"
+    container_name: kuma
+    restart: unless-stopped
+    networks:
+      - infra-network
+    volumes:
+      - "${APPDATA_PATH}/uptimekuma:/app/data"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.kuma.loadbalancer.server.port=3001"
+      - "traefik.http.routers.kuma.rule=Host(`uptime.${BASE_URL}`)"
+      - "traefik.http.routers.kuma.entrypoints=websecure"
+      - "traefik.http.routers.kuma.tls=true"
+      - "traefik.http.routers.kuma.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
