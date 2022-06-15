@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  traefik:
+    image: "traefik:v2.5"
+    container_name: traefik
+    ports:
+      - "80:80"     # http (redirects to https)
+      - "443:443"   # https
+    volumes:
+      - ./traefik.yml:/traefik.yml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - "${APPDATA_PATH}/traefik/traefik-certs:/letsencrypt"
+      - "${APPDATA_PATH}/traefik/traefik-logs:/logs"
+    labels:
+      - "traefik.enable=true"
+      - "lighthouse.base=traefik:v2.5"
+    networks:
+      - infra-network
+    restart: always
+    # logging:  todo remove
+    #   driver: journald
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
