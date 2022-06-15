@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  reverse-proxy:
+    container_name: unraid-reverse-proxy
+    build: .
+    ports: []  # 80 is used for the default port
+    restart: unless-stopped
+    networks:
+      - infra-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.reverse-proxy.loadbalancer.server.port=80"
+      - "traefik.http.routers.reverse-proxy.rule=Host(`unraid.${BASE_URL}`)"
+      - "traefik.http.routers.reverse-proxy.entrypoints=websecure"
+      - "traefik.http.routers.reverse-proxy.tls=true"
+      - "traefik.http.routers.reverse-proxy.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
