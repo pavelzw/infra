@@ -2,8 +2,9 @@ version: '3.9'
 
 services:
   traefik:
-    image: "traefik:v2.5"
+    image: "traefik:latest"
     container_name: traefik
+    restart: always
     ports:
       - "80:80"     # http (redirects to https)
       - "443:443"   # https
@@ -12,14 +13,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - "${APPDATA_PATH}/traefik/traefik-certs:/letsencrypt"
       - "${APPDATA_PATH}/traefik/traefik-logs:/logs"
-    labels:
-      - "traefik.enable=true"
-      - "lighthouse.base=traefik:v2.5"
     networks:
       - infra-network
-    restart: always
-    # logging:  todo remove
-    #   driver: journald
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${BASE_URL}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.entryPoints=websecure"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=dashboard-auth"
+      - "traefik.http.routers.dashboard.tls.certresolver=leresolver"
+      - "traefik.http.middlewares.dashboard-auth.basicauth.users=..."
+
 
 networks:
   infra-network:

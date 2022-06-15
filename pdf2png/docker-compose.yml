@@ -7,10 +7,11 @@ services:
     restart: unless-stopped
     networks:
       - infra-network
+    ports: []
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.pdf2png.loadbalancer.server.port=5000"
-      - "traefik.http.routers.pdf2png.rule=Host(`pdf2png.${BASE_URL}`)"
+      - "traefik.http.routers.pdf2png.rule=Host(`pdf2png.sheetable.net`) || Host(`pdf2png.${BASE_URL}`)"
       - "traefik.http.routers.pdf2png.entrypoints=websecure"
       - "traefik.http.routers.pdf2png.tls=true"
       - "traefik.http.routers.pdf2png.tls.certresolver=leresolver"
