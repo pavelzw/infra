@@ -12,4 +12,5 @@ services:
       WATCHTOWER_NOTIFICATION_URL: "..."
       WATCHTOWER_NOTIFICATION_TEMPLATE: |-
         {{range .}}{{.Time.Format \"2006-01-02 15:04:05\"}} ({{.Level}}): {{.Message}}{{println}}{{end}}
+      TZ: Europe/Berlin
     command: --interval 1800
