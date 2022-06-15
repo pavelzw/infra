@@ -7,8 +7,11 @@ services:
     restart: unless-stopped
     environment:
       - WEBSOCKET_ENABLED=true  # Enable WebSocket notifications.
+      - INVITATIONS_ALLOWED=false
+      - SIGNUPS_ALLOWED=false
+      - SERVER_ADMIN_EMAIL=...
     volumes:
-      - "${APPDATA_PATH}/bitwarden:/data"
+      - "${APPDATA_PATH}/vaultwarden:/data"
     networks:
       - infra-network
     ports: [] # listens on port 80 by default

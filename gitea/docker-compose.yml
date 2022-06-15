@@ -10,7 +10,7 @@ services:
     networks:
       - infra-network
     # ports: 
-    #    - "22:22"  # ssh not used at the moment
+    #   - "22:22"  # ssh not used at the moment
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.gitea.loadbalancer.server.port=3000"

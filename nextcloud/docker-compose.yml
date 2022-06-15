@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  nextcloud:
+    image: "nextcloud"
+    container_name: nextcloud
+    restart: unless-stopped
+    networks:
+      - infra-network
+    volumes:
+      - "${APPDATA_PATH}/nextcloud/nextcloud:/var/www/html"
+      - "${APPDATA_PATH}/nextcloud/apps:/var/www/html/custom_apps"
+      - "${APPDATA_PATH}/nextcloud/config:/var/www/html/config"
+      - "${SHARE_PATH}/nextcloud-shares:/var/www/html/data"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.${BASE_URL}`)"
+      - "traefik.http.routers.nextcloud.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud.tls=true"
+      - "traefik.http.routers.nextcloud.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network

@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  factorio:
+    image: "factoriotools/factorio:stable"
+    container_name: factorio
+    restart: unless-stopped
+    volumes:
+      - "${APPDATA_PATH}/factorio:/factorio"
+    ports:
+      - "34197:34197/udp"
+      - "27015:27015/tcp"
