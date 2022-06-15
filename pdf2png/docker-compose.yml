@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  pdf2png:
+    image: "vallezw/pdf2png"
+    container_name: pdf2png
+    restart: unless-stopped
+    networks:
+      - infra-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.pdf2png.loadbalancer.server.port=5000"
+      - "traefik.http.routers.pdf2png.rule=Host(`pdf2png.${BASE_URL}`)"
+      - "traefik.http.routers.pdf2png.entrypoints=websecure"
+      - "traefik.http.routers.pdf2png.tls=true"
+      - "traefik.http.routers.pdf2png.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network

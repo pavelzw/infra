@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  overseerr:
+    image: "sctx/overseerr"
+    container_name: overseerr
+    restart: unless-stopped
+    networks:
+      - infra-network
+    volumes:
+      - "${APPDATA_PATH}/overseerr:/app/config"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.overseerr.loadbalancer.server.port=3000"
+      - "traefik.http.routers.overseerr.rule=Host(`overseerr.${BASE_URL}`)"
+      - "traefik.http.routers.overseerr.entrypoints=websecure"
+      - "traefik.http.routers.overseerr.tls=true"
+      - "traefik.http.routers.overseerr.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network

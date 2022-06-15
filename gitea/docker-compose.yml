@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    restart: unless-stopped
+    volumes:
+      - "${APPDATA_PATH}/gitea:/data"
+    networks:
+      - infra-network
+    # ports: 
+    #    - "22:22"  # ssh not used at the moment
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+      - "traefik.http.routers.gitea.rule=Host(`git.${BASE_URL}`)"
+      - "traefik.http.routers.gitea.entrypoints=websecure"
+      - "traefik.http.routers.gitea.tls=true"
+      - "traefik.http.routers.gitea.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network

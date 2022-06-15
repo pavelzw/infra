@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  openssh:
+    image: "linuxserver/openssh-server"
+    container_name: openssh-server
+    restart: unless-stopped
+    ports:
+      - "2222:2222"
+    volumes:
+      - "${APPDATA_PATH}/openssh-server:/config"
+      - "${SHARE_PATH}/pavel:/mnt/pavel"
+      - "${SHARE_PATH}/russian-tv-shows:/mnt/russian-tv-shows"
+      - "${SHARE_PATH}/games:/mnt/games"
+      - "${SHARE_PATH}/russian-movies:/mnt/russian-movies"
+      - "${SHARE_PATH}/books:/mnt/books"
+      - "${SHARE_PATH}/movies:/mnt/movies"
+      - "${SHARE_PATH}/audiobooks:/mnt/audiobooks"
+      - "${SHARE_PATH}/tv-shows:/mnt/tv-shows"
+      - "${SHARE_PATH}/temp:/mnt/temp"
+      - "${SHARE_PATH}/music:/mnt/music"
+      - "${SHARE_PATH}/anime:/mnt/anime"
+      - "${SHARE_PATH}/programs:/mnt/programs"
+      - "${SHARE_PATH}/svetlana:/mnt/svetlana"
+      - "${SHARE_PATH}/photos:/mnt/photos"
+      - "${SHARE_PATH}/appdata:/mnt/appdata"
+    environment:
+      - PASSWORD_ACCESS=false
+      - PUBLIC_KEY=...
+      - USER_NAME=...
+      - SUDO_ACCESS=true

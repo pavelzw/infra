@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  filebrowser:
+    image: "filebrowser/filebrowser"
+    container_name: filebrowser
+    restart: unless-stopped
+    networks:
+      - infra-network
+    volumes:
+      - "${APPDATA_PATH}/filebrowser:/db"
+      - "${SHARE_PATH}/movies:/srv/movies"
+      - "${SHARE_PATH}/photos:/srv/photos"
+      - "${SHARE_PATH}/temp:/srv/temp"
+      - "${SHARE_PATH}/music:/srv/music"
+      - "${SHARE_PATH}/anime:/srv/anime"
+      - "${SHARE_PATH}/books:/srv/books"
+      - "${SHARE_PATH}/audiobooks:/srv/audiobooks"
+      - "${SHARE_PATH}/programs:/srv/programs"
+      - "${SHARE_PATH}/tv-shows:/srv/tv-shows"
+      - "${SHARE_PATH}/games:/srv/games"
+      - "${SHARE_PATH}/pavel:/srv/pavel"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
+      - "traefik.http.routers.filebrowser.rule=Host(`files.${BASE_URL}`)"
+      - "traefik.http.routers.filebrowser.entrypoints=websecure"
+      - "traefik.http.routers.filebrowser.tls=true"
+      - "traefik.http.routers.filebrowser.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network

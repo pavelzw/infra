@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  psitransfer:
+    image: "psitrax/psitransfer"
+    container_name: psitransfer
+    restart: unless-stopped
+    networks:
+      - infra-network
+    environment:
+      - PSITRANSFER_ADMIN_PASS=.
+      - PSITRANSFER_UPLOAD_PASS=.
+    volumes:
+      - "${APPDATA_PATH}/psitransfer:/data"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.psitransfer.loadbalancer.server.port=3000"
+      - "traefik.http.routers.psitransfer.rule=Host(`transfer.${BASE_URL}`)"
+      - "traefik.http.routers.psitransfer.entrypoints=websecure"
+      - "traefik.http.routers.psitransfer.tls=true"
+      - "traefik.http.routers.psitransfer.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network

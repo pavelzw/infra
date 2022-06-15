@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  tautulli:
+    image: "linuxserver/tautulli"
+    container_name: tautulli
+    restart: unless-stopped
+    networks:
+      - infra-network
+    volumes:
+      - "${APPDATA_PATH}/tautulli:/config"
+      - "${APPDATA_PATH}/tautulli/logs:/logs"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.tautulli.loadbalancer.server.port=8181"
+      - "traefik.http.routers.tautulli.rule=Host(`tautulli.${BASE_URL}`)"
+      - "traefik.http.routers.tautulli.entrypoints=websecure"
+      - "traefik.http.routers.tautulli.tls=true"
+      - "traefik.http.routers.tautulli.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
