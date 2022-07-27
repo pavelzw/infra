@@ -7,15 +7,11 @@ services:
     restart: always
     volumes:
       - "${APPDATA_PATH}/registry/data:/var/lib/registry"
-      - "${APPDATA_PATH}/registry/auth:/auth"
     networks:
       - infra-network
     environment:
       - REGISTRY_HTTP_SECRET=my_registry_secret
       - REGISTRY_STORAGE_DELETE_ENABLED=true
-      - REGISTRY_AUTH=htpasswd
-      - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
-      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
   
   registry-ui:
     image: joxit/docker-registry-ui:latest
@@ -36,7 +32,8 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=leresolver"
-      - "traefik.frontend.auth.basic=..."
+      - "traefik.http.routers.frontend.middlewares=basic-auth"
+      - "traefik.http.middlewares.basic-auth.basicauth.users=..."
       - "traefik.frontend.passHostHeader=true"
 
 networks:
