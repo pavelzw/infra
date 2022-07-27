@@ -2,13 +2,14 @@ version: '3.9'
 
 services:
   filebrowser:
-    image: "filebrowser/filebrowser"
+    image: "filebrowser/filebrowser:s6"
     container_name: filebrowser
     restart: unless-stopped
     networks:
       - infra-network
     volumes:
-      - "${APPDATA_PATH}/filebrowser:/db"
+      - "${APPDATA_PATH}/filebrowser/database:/database"
+      - "${APPDATA_PATH}/filebrowser/config:/config"
       - "${SHARE_PATH}/movies:/srv/movies"
       - "${SHARE_PATH}/photos:/srv/photos"
       - "${SHARE_PATH}/temp:/srv/temp"
@@ -20,6 +21,7 @@ services:
       - "${SHARE_PATH}/tv-shows:/srv/tv-shows"
       - "${SHARE_PATH}/games:/srv/games"
       - "${SHARE_PATH}/pavel:/srv/pavel"
+      - "${SHARE_PATH}/svetlana:/srv/svetlana"
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
@@ -32,3 +34,4 @@ networks:
   infra-network:
     external: true
     name: infra-network
+
