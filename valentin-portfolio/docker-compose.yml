@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  valentin-blog:
+    image: "ghcr.io/vallezw/aboutmepage:latest"
+    container_name: valentin-portfolio
+    restart: unless-stopped
+    networks:
+      - infra-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.valentin-blog.loadbalancer.server.port=80"
+      - "traefik.http.routers.valentin-blog.rule=Host(`valentin.${BASE_URL}`)"
+      - "traefik.http.routers.valentin-blog.entrypoints=websecure"
+      - "traefik.http.routers.valentin-blog.tls=true"
+      - "traefik.http.routers.valentin-blog.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
