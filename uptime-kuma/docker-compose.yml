@@ -9,6 +9,7 @@ services:
       - infra-network
     volumes:
       - "${APPDATA_PATH}/uptimekuma:/app/data"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.kuma.loadbalancer.server.port=3001"
