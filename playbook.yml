@@ -1,0 +1,19 @@
+---
+
+- name: Render compose files.
+  hosts: localhost
+  tags: template
+  vars:
+    render_blacklist:
+      - watchtower/docker-compose.yml
+
+  tasks:
+    - import_tasks: tasks/render_compose_files.yml
+
+- name: ...TODO
+  hosts: all
+  become: true
+
+  tasks:
+    - import_tasks: tasks/essential.yml
+    - import_tasks: tasks/docker_containers.yml

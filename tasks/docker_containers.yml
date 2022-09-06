@@ -1,0 +1,21 @@
+- name: Ensure docker-compose files are present.
+  ansible.builtin.copy:
+    src: '{{ render_path }}/{{ item }}'
+    dest: '{{ appdata_path }}/infra'
+  loop: '{{ docker_compose_projects }}'
+
+- name: Ensure .env file for docker-compose is generated.
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/files/docker-images/.env.j2"
+    dest: "{{ appdata_path }}/infra/.env"
+
+- name: Ensure docker network is created.
+  community.docker.docker_network:
+    name: infra-network
+
+- name: Ensure docker-compose projects are started.
+  community.docker.docker_compose:
+    project_src: "{{ appdata_path }}/infra/{{ item }}"
+    state: present
+    env_file: "{{ appdata_path }}/infra/.env"
+  loop: "{{ docker_compose_projects }}"

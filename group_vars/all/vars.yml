@@ -1,0 +1,31 @@
+share_path: /mnt/user
+appdata_path: "{{ share_path }}/appdata"
+
+docker_compose_dir: "{{ playbook_dir }}/files/docker-images"
+render_path: "{{ playbook_dir }}/render/compose"
+
+docker_compose_projects:
+  - code-server
+  - gitea
+  - filebrowser
+  - psitransfer
+  - nextcloud
+  - nothingtoseehere
+  - openssh-server
+  - overseerr
+  - paperless-ngx
+  - plex
+  - portainer
+  - psitransfer
+  - qbittorrent
+  - registry
+  - registry-valentin
+  - rstudio
+  - sheetable
+  - tautulli
+  - traefik
+  - unraid
+  - uptime-kuma
+  - valentin-portfolio
+  - vaultwarden
+  - watchtower

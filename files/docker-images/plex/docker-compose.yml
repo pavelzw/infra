@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  plex:
+    image: plexinc/pms-docker
+    container_name: plex
+    restart: unless-stopped
+    environment:
+      - PLEX_UID=99
+      - PLEX_GID=100
+      - VERSION=latest
+      - TZ=Europe/Berlin
+    networks:
+      - infra-network
+    ports: # port 32400 is used for the web UI
+      - "32400:32400/tcp"
+      - "1900:1900/udp"
+      - "3005:3005/tcp"
+      # - "5353:5353/udp"  # already in use?
+      - "8324:8324/tcp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+      - "32469:32469/tcp"
+    volumes:
+      - "${APPDATA_PATH}/Plex-Media-Server:/config"
+      - "${SHARE_PATH}/movies:/data/movies"
+      - "${SHARE_PATH}/tv-shows:/data/tvshows"
+      - "${SHARE_PATH}/audiobooks:/data/audiobooks"
+      - "${SHARE_PATH}/anime:/data/anime"
+      - "${SHARE_PATH}/music:/data/music"
+      - "${SHARE_PATH}/russian-movies:/data/russian-movies"
+      - "${SHARE_PATH}/russian-tv-shows:/data/russian-tv-shows"
+      - "${SHARE_PATH}/temp/plex-transcode:/transcode"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.plex.loadbalancer.server.port=32400"
+      - "traefik.http.routers.plex.rule=Host(`plex.${BASE_URL}`)"
+      - "traefik.http.routers.plex.entrypoints=websecure"
+      - "traefik.http.routers.plex.tls=true"
+      - "traefik.http.routers.plex.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
+

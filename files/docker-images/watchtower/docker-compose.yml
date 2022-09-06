@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  watchtower:
+    image: "containrrr/watchtower"
+    container_name: watchtower
+    restart: "always"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      WATCHTOWER_NOTIFICATIONS: shoutrrr
+      WATCHTOWER_NOTIFICATION_URL: "{{ watchtower.discord_notification_url }}"
+      WATCHTOWER_NOTIFICATION_TEMPLATE: |-
+        {% raw %}{{range .}}{{.Time.Format \"2006-01-02 15:04:05\"}} ({{.Level}}): {{.Message}}{{println}}{{end}}{% endraw %}
+      TZ: Europe/Berlin
+    command: --interval 1800

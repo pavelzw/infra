@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  vpn:
+    image: ghcr.io/bubuntux/nordvpn
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:                # Review https://github.com/bubuntux/nordvpn#environment-variables
+      - USER={{ nordvpn.username }}
+      - PASS={{ nordvpn.password }}
+      - CONNECT={{ nordvpn.country }}
+      - TECHNOLOGY=NordLynx
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
+    networks:
+      - infra-network  # needed here because the container cannot be connected to the network from outside
+  torrent:
+    image: ghcr.io/linuxserver/qbittorrent
+    network_mode: service:vpn
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.torrent.loadbalancer.server.port=8080
+      - traefik.http.routers.torrent.rule=Host(`qbittorrent.${BASE_URL}`)
+      - "traefik.http.routers.torrent.entrypoints=websecure"
+      - "traefik.http.routers.torrent.tls=true"
+      - "traefik.http.routers.torrent.tls.certresolver=leresolver"
+    volumes:
+      - "${APPDATA_PATH}/qbittorrent/config:/config"
+      - "${SHARE_PATH}/temp/torrent:/downloads"
+    depends_on:
+      - vpn
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
