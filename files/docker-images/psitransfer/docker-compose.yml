@@ -8,8 +8,8 @@ services:
     networks:
       - infra-network
     environment:
-      - PSITRANSFER_ADMIN_PASS=.
-      - PSITRANSFER_UPLOAD_PASS=.
+      - PSITRANSFER_ADMIN_PASS={{ psitransfer.admin_password }}
+      - PSITRANSFER_UPLOAD_PASS={{ psitransfer.password }}
     volumes:
       - "${APPDATA_PATH}/psitransfer:/data"
     labels:
