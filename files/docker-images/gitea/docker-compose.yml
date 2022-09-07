@@ -9,7 +9,7 @@ services:
       - "${APPDATA_PATH}/gitea:/data"
     networks:
       - infra-network
-    # ports: 
+    # ports:
     #   - "22:22"  # ssh not used at the moment
     labels:
       - "traefik.enable=true"

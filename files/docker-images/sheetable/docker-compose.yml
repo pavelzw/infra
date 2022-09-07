@@ -21,4 +21,3 @@ networks:
   infra-network:
     external: true
     name: infra-network
-

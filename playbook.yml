@@ -5,7 +5,7 @@
   tags: template
   vars:
     render_blacklist:
-      - watchtower/docker-compose.yml
+      - EMPTY
 
   tasks:
     - import_tasks: tasks/render_compose_files.yml

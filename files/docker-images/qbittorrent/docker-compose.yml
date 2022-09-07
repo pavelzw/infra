@@ -6,7 +6,7 @@ services:
     cap_add:
       - NET_ADMIN
       - NET_RAW
-    environment:                # Review https://github.com/bubuntux/nordvpn#environment-variables
+    environment:  # Review https://github.com/bubuntux/nordvpn#environment-variables
       - USER={{ nordvpn.username }}
       - PASS={{ nordvpn.password }}
       - CONNECT={{ nordvpn.country }}

@@ -10,7 +10,9 @@
     dest: '{{ render_path }}/{{ item.path }}'
     mode: 0755
   changed_when: false
-  with_filetree: '{{ docker_compose_dir }}'
+  with_community.general.filetree: '{{ docker_compose_dir }}'
+  loop_control:
+    label: '{{ item.path }}'
   when: item.state == 'directory'
 
 - name: Render templated files.
@@ -20,7 +22,9 @@
     force: true
     mode: 0644
   changed_when: false
-  with_filetree: '{{ docker_compose_dir }}'
+  with_community.general.filetree: '{{ docker_compose_dir }}'
+  loop_control:
+    label: '{{ item.path }}'
   when: item.state == 'file' and item.path not in render_blacklist
 
 - name: Copy blacklisted files.
@@ -30,5 +34,7 @@
     force: true
     mode: 0644
   changed_when: false
-  with_filetree: '{{ docker_compose_dir }}'
+  with_community.general.filetree: '{{ docker_compose_dir }}'
+  loop_control:
+    label: '{{ item.path }}'
   when: item.state == 'file' and item.path in render_blacklist

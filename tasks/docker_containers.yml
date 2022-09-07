@@ -2,12 +2,14 @@
   ansible.builtin.copy:
     src: '{{ render_path }}/{{ item }}'
     dest: '{{ appdata_path }}/infra'
+    mode: 0644
   loop: '{{ docker_compose_projects }}'
 
 - name: Ensure .env file for docker-compose is generated.
   ansible.builtin.template:
     src: "{{ playbook_dir }}/files/docker-images/.env.j2"
     dest: "{{ appdata_path }}/infra/.env"
+    mode: 0644
 
 - name: Ensure docker network is created.
   community.docker.docker_network:
