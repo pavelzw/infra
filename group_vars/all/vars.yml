@@ -22,6 +22,7 @@ docker_compose_projects:
   - registry-valentin
   - rstudio
   - sheetable
+  - sonarr
   - tautulli
   - traefik
   - unraid

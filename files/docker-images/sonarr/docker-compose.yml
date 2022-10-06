@@ -1,0 +1,65 @@
+version: '3.9'
+
+services:
+  vpn:
+    image: ghcr.io/bubuntux/nordvpn
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:  # Review https://github.com/bubuntux/nordvpn#environment-variables
+      - USER={{ nordvpn.username }}
+      - PASS={{ nordvpn.password }}
+      - CONNECT={{ nordvpn.country }}
+      - TECHNOLOGY=NordLynx
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
+    networks:
+      - infra-network  # needed here because the container cannot be connected to the network from outside
+
+  sonarr:
+    image: cr.hotio.dev/hotio/sonarr
+    depends_on:
+      - vpn
+    network_mode: service:vpn
+    environment:
+      - TZ=Europe/Berlin
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.sonarr.loadbalancer.server.port=8989
+      - traefik.http.routers.sonarr.rule=Host(`sonarr.${BASE_URL}`)
+      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.routers.sonarr.tls.certresolver=leresolver"
+    volumes:
+      - "${APPDATA_PATH}/sonarr/config:/config"
+      - "${SHARE_PATH}/temp/sonarr-stuff:/downloads"
+      - "${SHARE_PATH}/temp/sonarr-data:/data"
+
+  nzbget:
+    image: lscr.io/linuxserver/nzbget:latest
+    container_name: nzbget
+    depends_on:
+      - vpn
+    network_mode: service:vpn
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - "NZBGET_USER={{ nzbget.username }}"
+      - "NZBGET_PASS={{ nzbget.password }}"
+    volumes:
+      - "${APPDATA_PATH}/nzbget:/config"
+      - "${SHARE_PATH}/temp/sonarr-stuff:/downloads"
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.nzbget.loadbalancer.server.port=6789
+      - traefik.http.routers.nzbget.rule=Host(`nzbget.${BASE_URL}`)
+      - "traefik.http.routers.nzbget.entrypoints=websecure"
+      - "traefik.http.routers.nzbget.tls=true"
+      - "traefik.http.routers.nzbget.tls.certresolver=leresolver"
+    restart: unless-stopped
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network
