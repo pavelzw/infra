@@ -7,7 +7,7 @@ services:
     restart: "always"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - "{{ ansible_env.HOME }}/.docker/config.json:/config.json:ro"
+      - "~/.docker/config.json:/config.json:ro"
     environment:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "{{ watchtower.discord_notification_url }}"
