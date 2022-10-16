@@ -7,15 +7,10 @@ services:
     restart: always
     volumes:
       - "${APPDATA_PATH}/registry/data:/var/lib/registry"
-      - "${APPDATA_PATH}/registry/auth:/auth"
     networks:
       - infra-network
     environment:
-      - REGISTRY_HTTP_SECRET=my_registry_secret
       - REGISTRY_STORAGE_DELETE_ENABLED=true
-      - REGISTRY_AUTH=htpasswd
-      - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
-      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
 
   registry-ui:
     image: joxit/docker-registry-ui:latest
@@ -36,7 +31,8 @@ services:
       - "traefik.http.routers.registry-ui-valentin.entrypoints=websecure"
       - "traefik.http.routers.registry-ui-valentin.tls=true"
       - "traefik.http.routers.registry-ui-valentin.tls.certresolver=leresolver"
-      - "traefik.registry-ui-valentin.auth.basic={{ registry_valentin.basicauth }}"
+      - "traefik.http.routers.frontend.middlewares=registry-valentin-auth"
+      - "traefik.http.middlewares.basic-auth.registry-valentin-auth.users={{ registry_valentin.basicauth }}"
       - "traefik.registry-ui-valentin.passHostHeader=true"
 
 networks:

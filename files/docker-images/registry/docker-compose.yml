@@ -10,7 +10,6 @@ services:
     networks:
       - infra-network
     environment:
-      - REGISTRY_HTTP_SECRET=my_registry_secret
       - REGISTRY_STORAGE_DELETE_ENABLED=true
 
   registry-ui:
@@ -32,8 +31,8 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=leresolver"
-      - "traefik.http.routers.frontend.middlewares=basic-auth"
-      - "traefik.http.middlewares.basic-auth.basicauth.users={{ registry.basicauth }}"
+      - "traefik.http.routers.frontend.middlewares=registry-auth"
+      - "traefik.http.middlewares.registry-auth.basicauth.users={{ registry.basicauth }}"
       - "traefik.frontend.passHostHeader=true"
 
 networks:
