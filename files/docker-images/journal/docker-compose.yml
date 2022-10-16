@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  valentin-journal:
+    image: "ghcr.io/vallezw/journal:latest"
+    restart: unless-stopped
+    networks:
+      - infra-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.valentin-journal.loadbalancer.server.port=80"
+      - "traefik.http.routers.valentin-journal.rule=Host(`journal.${BASE_URL}`)"
+      - "traefik.http.routers.valentin-journal.entrypoints=websecure"
+      - "traefik.http.routers.valentin-journal.tls=true"
+      - "traefik.http.routers.valentin-journal.tls.certresolver=leresolver"
+
+networks:
+  infra-network:
+    external: true
+    name: infra-network

@@ -6,13 +6,13 @@ services:
     container_name: registry-valentin
     restart: always
     volumes:
-      - "${APPDATA_PATH}/registry/data:/var/lib/registry"
+      - "${APPDATA_PATH}/registry-valentin/data:/var/lib/registry"
     networks:
       - infra-network
     environment:
       - REGISTRY_STORAGE_DELETE_ENABLED=true
 
-  registry-ui:
+  registry-ui-valentin:
     image: joxit/docker-registry-ui:latest
     container_name: registry-ui-valentin
     restart: always
@@ -31,8 +31,8 @@ services:
       - "traefik.http.routers.registry-ui-valentin.entrypoints=websecure"
       - "traefik.http.routers.registry-ui-valentin.tls=true"
       - "traefik.http.routers.registry-ui-valentin.tls.certresolver=leresolver"
-      - "traefik.http.routers.frontend.middlewares=registry-valentin-auth"
-      - "traefik.http.middlewares.basic-auth.registry-valentin-auth.users={{ registry_valentin.basicauth }}"
+      - "traefik.http.routers.registry-ui-valentin.middlewares=registry-valentin-auth"
+      - "traefik.http.middlewares.registry-valentin-auth.basicauth.users={{ registry_valentin.basicauth }}"
       - "traefik.registry-ui-valentin.passHostHeader=true"
 
 networks:

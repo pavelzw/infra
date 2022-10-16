@@ -8,7 +8,7 @@ docker_compose_projects:
   - code-server
   - gitea
   - filebrowser
-  - psitransfer
+  - journal
   - nextcloud
   - nothingtoseehere
   - openssh-server
